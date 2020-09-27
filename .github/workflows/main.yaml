@@ -27,6 +27,9 @@ jobs:
           - '3.6'
           - '3.7'
           - '3.8'
+        git-version:
+          - default
+          - '2.21.0'
     env:
       DARCS_EMAIL: foo <foo@example.com>
     steps:
@@ -34,18 +37,19 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      # - run: |
-      #     # Downgrade Git because of:
-      #     # https://lore.kernel.org/git/CAKqNo6RJqp94uLMf8Biuo=ZvMZB9Mq6RRMrUgsLW4u1ks+mnOA@mail.gmail.com/T/#u
-      #     sudo apt-get install dh-autoreconf libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev
-      #     curl -o git.tar.gz https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.21.0.tar.gz
-      #     tar -zxf git.tar.gz
-      #     cd git-2.21.0
-      #     make configure
-      #     ./configure --prefix=/usr
-      #     sudo make install
-      #     which git
-      #     git --version
+      - if: ${{ matrix.git-version != 'default' }}
+        run: |
+          # Downgrade Git because of:
+          # https://lore.kernel.org/git/CAKqNo6RJqp94uLMf8Biuo=ZvMZB9Mq6RRMrUgsLW4u1ks+mnOA@mail.gmail.com/T/#u
+          sudo apt-get install dh-autoreconf libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev
+          curl -o git.tar.gz https://mirrors.edge.kernel.org/pub/software/scm/git/git-${{ matrix.git-version }}.tar.gz
+          tar -zxf git.tar.gz
+          cd git-${{ matrix.git-version }}
+          make configure
+          ./configure --prefix=/usr
+          sudo make install
+          which git
+          git --version
       - run: |
           export PATH="$PATH:/opt"
           sudo apt-get install -y darcs bzr
