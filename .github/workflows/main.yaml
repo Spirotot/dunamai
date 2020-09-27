@@ -40,7 +40,7 @@ jobs:
           sudo apt-get install dh-autoreconf libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev
           curl -o git.tar.gz https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.21.0.tar.gz
           tar -zxf git.tar.gz
-          cd git-2.21.0
+          cd git-2.26.0
           make configure
           ./configure --prefix=/usr
           sudo make install
